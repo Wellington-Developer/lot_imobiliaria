@@ -197,6 +197,7 @@ export const EditPost = () => {
           <option value="Vendido">Vendido</option>
           <option value="Reservado">Reservado</option>
           <option value="Disponivel">Disponível</option>
+          <option value="Inativo">Inativo</option>
         </select>
         <Input label="Preço" name="preco" type="number" {...preco} />
         <Input
