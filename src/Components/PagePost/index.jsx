@@ -251,7 +251,7 @@ export const PostPage = () => {
                 )}
               </div>
               {data.locacao_ou_venda == "Locacao" && (
-                <div id="value-add" style={{ zIndex: "1" }}>
+                <div id="value-add" style={{ zIndex: "-999999" }}>
                   <FaCircleInfo
                     onMouseEnter={() => setModalPrice(true)}
                     onMouseLeave={() => setModalPrice(false)}

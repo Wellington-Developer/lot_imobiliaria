@@ -1,19 +1,19 @@
-import './styles.css';
-import { UserContext } from '../../UserContext';
-import { useContext, useEffect, useState } from 'react';
-import { Slider } from '@mui/material';
-import { Post } from '../RowPosts/Post';
-import { useParams } from 'react-router-dom';
+import "./styles.css";
+import { UserContext } from "../../UserContext";
+import { useContext, useEffect, useState } from "react";
+import { Slider } from "@mui/material";
+import { Post } from "../RowPosts/Post";
+import { useParams } from "react-router-dom";
 
 export const FilterPage = () => {
   const { posts, filteredPosts, filterPosts } = useContext(UserContext);
   const [tipos, setTipos] = useState([]);
   const [cidades, setCidades] = useState([]);
   const [bairros, setBairros] = useState([]);
-  const [tipo, setTipo] = useState('');
-  const [cidade, setCidade] = useState('');
-  const [bairro, setBairro] = useState('');
-  const [tipoNegocio, setTipoNegocio] = useState('');
+  const [tipo, setTipo] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [bairro, setBairro] = useState("");
+  const [tipoNegocio, setTipoNegocio] = useState("");
   const [apenasComercio, setApenasComercio] = useState(false);
   const [precoMin, setPrecoMin] = useState(0);
   const [precoMax, setPrecoMax] = useState(500000);
@@ -25,17 +25,19 @@ export const FilterPage = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('https://huergo.com.br/lot-api/json/api/photo');
-      setTipoNegocio(id)
+      const response = await fetch(
+        "https://huergo.com.br/lot-api/json/api/photo"
+      );
+      setTipoNegocio(id);
 
       if (response.ok) {
         const json = await response.json();
         setData(json);
       } else {
-        console.error('Erro ao carregar os dados:', response.statusText);
+        console.error("Erro ao carregar os dados:", response.statusText);
       }
     } catch (error) {
-      console.error('Erro ao processar a solicitação:', error);
+      console.error("Erro ao processar a solicitação:", error);
     }
   };
 
@@ -55,9 +57,9 @@ export const FilterPage = () => {
       const cidadesArray = Array.from(cidadesSet);
       const bairrosArray = Array.from(bairrosSet);
 
-      tiposArray.unshift('');
-      cidadesArray.unshift('');
-      bairrosArray.unshift('');
+      tiposArray.unshift("");
+      cidadesArray.unshift("");
+      bairrosArray.unshift("");
 
       setTipos(tiposArray);
       setCidades(cidadesArray);
@@ -66,16 +68,40 @@ export const FilterPage = () => {
   };
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   useEffect(() => {
     filterData();
   }, [posts]);
 
   useEffect(() => {
-    filterPosts(tipo, cidade, bairro, tipoNegocio, apenasComercio, precoMin, precoMax, banheirosMin, banheirosMax, quartosMin, quartosMax);
-  }, [tipo, cidade, bairro, tipoNegocio, apenasComercio, precoMin, precoMax, banheirosMin, banheirosMax, quartosMin, quartosMax]);
+    filterPosts(
+      tipo,
+      cidade,
+      bairro,
+      tipoNegocio,
+      apenasComercio,
+      precoMin,
+      precoMax,
+      banheirosMin,
+      banheirosMax,
+      quartosMin,
+      quartosMax
+    );
+  }, [
+    tipo,
+    cidade,
+    bairro,
+    tipoNegocio,
+    apenasComercio,
+    precoMin,
+    precoMax,
+    banheirosMin,
+    banheirosMax,
+    quartosMin,
+    quartosMax,
+  ]);
 
   function valuetext(value) {
     return `${value}°C`;
@@ -112,20 +138,28 @@ export const FilterPage = () => {
               }}
               getAriaValueText={valuetext}
               valueLabelDisplay="auto"
-              step={5000}
+              step={`${id == "locacao" ? 200 : 5000}`}
               marks
               min={0}
-              max={500000}
+              max={`${id == "locacao" ? 10000 : 500000}`}
             />
-            <div className='price-controller'>
-              <p>De R${precoMin.toLocaleString('pt-br', {
-                type: 'currency',
-                currency: 'BRL'
-              })}</p>
-              <p>Até R$ {precoMax.toLocaleString('pt-br', {
-                type: 'currency',
-                currency: 'BRL'
-              })}</p>
+            <div className="price-controller">
+              <p>
+                De R$
+                {precoMin.toLocaleString("pt-br", {
+                  type: "currency",
+                  currency: "BRL",
+                })}
+              </p>
+              <p>
+                Até R${" "}
+                {id == "locacao"
+                  ? "10.000"
+                  : precoMax.toLocaleString("pt-br", {
+                      type: "currency",
+                      currency: "BRL",
+                    })}
+              </p>
             </div>
           </div>
 
@@ -144,7 +178,7 @@ export const FilterPage = () => {
               min={0}
               max={10}
             />
-            <div className='slider-controller'>
+            <div className="slider-controller">
               <p>Mín: {banheirosMin}</p>
               <p>Máx: {banheirosMax}</p>
             </div>
@@ -165,12 +199,11 @@ export const FilterPage = () => {
               min={0}
               max={10}
             />
-            <div className='slider-controller'>
+            <div className="slider-controller">
               <p>Mín: {quartosMin}</p>
               <p>Máx: {quartosMax}</p>
             </div>
           </div>
-
 
           <form action="">
             <select onChange={(e) => setTipo(e.target.value)} value={tipo}>
@@ -202,44 +235,57 @@ export const FilterPage = () => {
           </form>
         </div>
 
-          {filteredPosts ? (
-            <div className="right-side__post">
-              <h1 id="type">Resultados</h1>
-              <div className="right-side">
-              {filteredPosts.sort((a, b) => {
-                const statusA = a.status_do_imovel.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                const statusB = b.status_do_imovel.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        {filteredPosts ? (
+          <div className="right-side__post">
+            <h1 id="type">Resultados</h1>
+            <div className="right-side">
+              {filteredPosts
+                .sort((a, b) => {
+                  const statusA = a.status_do_imovel
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "");
+                  const statusB = b.status_do_imovel
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "");
 
-                if (statusA === "disponivel" && statusB !== "disponivel" || statusA === "disponível" && statusB !== "disponível") {
-                  return -1;
-                }
-                if (statusA !== "disponivel" && statusB === "disponivel" || statusA !== "disponível" && statusB === "disponível") {
-                  return 1;
-                }
-                
-                // Se os status forem iguais, ordenar com base no id
-                return a.id - b.id;
-              }).map((post, index) => (
-                <Post
-                  title={post.title}
-                  price={post.preco}
-                  locale={post.localidade}
-                  qt_bath={post.qtd_banheiros}
-                  qt_room={post.qtd_quartos}
-                  size={post.metros_totais}
-                  img={post.imagens_relacionadas[0]}
-                  id={post.id}
-                  key={index}
-                  status={post.status}
-                />
-              ))}
-              </div>
+                  if (
+                    (statusA === "disponivel" && statusB !== "disponivel") ||
+                    (statusA === "disponível" && statusB !== "disponível")
+                  ) {
+                    return -1;
+                  }
+                  if (
+                    (statusA !== "disponivel" && statusB === "disponivel") ||
+                    (statusA !== "disponível" && statusB === "disponível")
+                  ) {
+                    return 1;
+                  }
+
+                  // Se os status forem iguais, ordenar com base no id
+                  return a.id - b.id;
+                })
+                .map((post, index) => (
+                  <Post
+                    title={post.title}
+                    price={post.preco}
+                    locale={post.localidade}
+                    qt_bath={post.qtd_banheiros}
+                    qt_room={post.qtd_quartos}
+                    size={post.metros_totais}
+                    img={post.imagens_relacionadas[0]}
+                    id={post.id}
+                    key={index}
+                    status={post.status}
+                  />
+                ))}
             </div>
-          ) :
-          (
-            <h1>Busque por algo</h1>
-          )}
-        </div>
+          </div>
+        ) : (
+          <h1>Busque por algo</h1>
+        )}
       </div>
+    </div>
   );
 };
